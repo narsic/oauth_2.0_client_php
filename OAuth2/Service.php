@@ -73,7 +73,6 @@ class Service
        $parameters = array_merge($userParameters, array(
             'type' => 'web_server',
             'client_id' => $this->_client->getClientKey(),
-            'redirect_uri' => $this->_client->getCallbackUrl(),
             'response_type' => 'code',
         ));
 
@@ -81,11 +80,54 @@ class Service
             $parameters['scope'] = $this->_scope;
         }
 
-        $url = $this->_configuration->getAuthorizeEndpoint();
-        $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($parameters);
+        if ($this->_client->getCallbackUrl()) {
+            $parameters['redirect_uri'] = $this->_client->getCallbackUrl();
+            $url = $this->_configuration->getAuthorizeEndpoint();
+            $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($parameters);
 
-        header('Location: ' . $url);
-        die();
+            header('Location: ' . $url);
+            die();
+        } else {
+            $http = new HttpClient($this->_configuration->getAuthorizeEndpoint(), 'POST', http_build_query($parameters));
+            //$http->setDebug(true);
+            $http->execute();
+            $this->_getAuthorizeCode($http);
+        }
+
+    }
+
+    /**
+     * parse the response of an direct get code request and call getAccessToken function with code
+     *
+     * @param \OAuth2\HttpClient $http
+     */
+    private function _getAuthorizeCode(HttpClient $http) {
+        $headers = $http->getHeaders();
+        $type = 'text';
+        if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'application/json') !== false) {
+            $type = 'json';
+        }
+
+        switch ($type) {
+            case 'json':
+                $response = json_decode($http->getResponse(), true);
+                break;
+            case 'text':
+            default:
+                $response = HttpClient::parseStringToArray($http->getResponse(), '&', '=');
+                break;
+        }
+
+        if (isset($response['error'])) {
+            throw new Exception('got error while requesting authorize code: ' . $response['error']);
+        }
+        if (! isset($response['code'])) {
+            throw new Exception('no authorize code found');
+        }
+
+        $code = $response['code'];
+
+        $this->getAccessToken($code);
     }
 
     /**

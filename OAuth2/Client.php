@@ -51,7 +51,7 @@ class Client
      * @param string $clientSecret
      * @param string $callbackUrl
      */
-    public function __construct($clientKey, $clientSecret, $callbackUrl) {
+    public function __construct($clientKey, $clientSecret, $callbackUrl = null) {
         $this->_clientKey = $clientKey;
         $this->_clientSecret = $clientSecret;
         $this->_callbackUrl = $callbackUrl;
