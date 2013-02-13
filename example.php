@@ -10,6 +10,11 @@ $client = new OAuth2\Client(
         'CLIENT_SECRET',
         'CALLBACK_URL');
 
+// or use without callback_url, use in desktop application
+$client = new OAuth2\Client(
+        'CLIENT_ID',
+        'CLIENT_SECRET');
+
 // configuration of service
 $configuration = new OAuth2\Service\Configuration(
         'AUTHORIZE_ENDPOINT',
