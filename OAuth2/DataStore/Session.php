@@ -52,6 +52,15 @@ class Session implements DataStore
         $_SESSION['oauth2_token'] = $token;
     }
 
+    /**
+     * remove session
+     *
+     */
+    public function removeAccessToken() {
+        $_SESSION['oauth2_token'] = null;
+        unset($_SESSION['oauth2_token']);
+    }
+
     public function  __destruct() {
         session_write_close();
     }
