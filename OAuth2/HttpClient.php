@@ -181,4 +181,15 @@ class HttpClient
     public function setDebug($debug) {
         $this->_debug = $debug;
     }
+
+    /**
+     * @param string $key
+     */
+    public function getHeader($key) {
+        if (array_key_exists($key, $this->_info)) {
+            return $this->_info[$key];
+        } else {
+            return null;
+        }
+    }
 }
