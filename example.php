@@ -18,7 +18,8 @@ $client = new OAuth2\Client(
 // configuration of service
 $configuration = new OAuth2\Service\Configuration(
         'AUTHORIZE_ENDPOINT',
-        'ACCESS_TOKEN_ENDPOINT');
+        'ACCESS_TOKEN_ENDPOINT',
+        'REVOKE_ENDPOINT');
 
 // storage class for access token, just implement OAuth2\DataStore interface for
 // your own implementation
@@ -37,6 +38,10 @@ if (isset($_GET['action'])) {
         case 'requestApi':
             // calls api endpoint with access token
             echo $service->callApiEndpoint('API_ENDPOINT');
+            break;
+        case 'revoke':
+            // calls revoke access token
+            echo $service->revokeAccessToken();
             break;
     }
 }
@@ -62,5 +67,7 @@ $token = $dataStore->retrieveAccessToken();
         <a href="example.php?action=authorize" id="authorize">authorize</a><br />
         <br />
         <a href="example.php?action=requestApi" id="request-api">request API</a><br />
+        <br />
+        <a href="example.php?action=revoke" id="revoke">Revoke access token</a><br />
     </body>
 </html>
