@@ -248,6 +248,9 @@ class Service
      * @return string
      */
     public function callApiEndpoint($endpoint, $method = 'GET', array $uriParameters = array(), $postBody = null, array $additionalHeaders = array()) {
+        if (! $this->_dataStore->retrieveAccessToken()->getAccessToken()) {
+            throw new Exception('could not revoke access token, no access token found, did you forgot call autorize()!!');
+        }
         $token = $this->_dataStore->retrieveAccessToken();
 
         //check if token is invalid
