@@ -46,15 +46,21 @@ class Configuration
     /**
      * @var string
      */
+    private $_revokeEndpoint;
+
+    /**
+     * @var string
+     */
     private $_authorizationMethod = self::AUTHORIZATION_METHOD_HEADER;
 
     /**
      * @param string $authorizeEndpoint
      * @param string $accessTokenEndpoint
      */
-    public function __construct($authorizeEndpoint, $accessTokenEndpoint) {
+    public function __construct($authorizeEndpoint, $accessTokenEndpoint, $revokeEndpoint=null) {
         $this->_authorizeEndpoint = $authorizeEndpoint;
         $this->_accessTokenEndpoint = $accessTokenEndpoint;
+        $this->_revokeEndpoint = $revokeEndpoint;
     }
 
     /**
@@ -69,6 +75,13 @@ class Configuration
      */
     public function getAccessTokenEndpoint() {
         return $this->_accessTokenEndpoint;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRevokeEndpoint() {
+        return $this->_revokeEndpoint;
     }
 
     /**

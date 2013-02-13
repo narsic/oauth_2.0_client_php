@@ -189,6 +189,40 @@ class Service
     }
 
     /**
+     * revoke access token
+     *
+     * @return bool
+     */
+    public function revokeAccessToken() {
+        if (! $this->_dataStore->retrieveAccessToken()->getAccessToken()) {
+            throw new Exception('could not revoke access token, no access token found, did you forgot call autorize()!!');
+        }
+
+        if (!$this->_configuration->getRevokeEndpoint()) {
+            throw new Exception('no revoke end point found.');
+        }
+
+        $parameters = array(
+            'type' => 'web_server',
+            'client_id' => $this->_client->getClientKey(),
+            'access_token' => $this->_dataStore->retrieveAccessToken()->getAccessToken(),
+        );
+
+        $http = new HttpClient($this->_configuration->getRevokeEndpoint(), 'POST', http_build_query($parameters));
+        $http->execute();
+
+        $headers = $http->getHeaders();
+
+        if ($http->getHeader('http_code') == '200') {
+            // remove session details access_token, refresh_token, ...
+             $this->_dataStore->removeAccessToken();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * parse the response of an access token request and store it in dataStore
      *
      * @param \OAuth2\HttpClient $http
