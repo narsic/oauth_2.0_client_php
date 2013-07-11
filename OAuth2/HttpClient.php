@@ -125,6 +125,7 @@ class HttpClient
             curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_parameters);
         } else {
             curl_setopt($ch, CURLOPT_URL, $this->_url . ($this->_parameters ? '?' . $this->_parameters : ''));
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->_method);
         }
 
         curl_setopt($ch, CURLOPT_HEADER, 1);
