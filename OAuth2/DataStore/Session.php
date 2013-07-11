@@ -35,7 +35,9 @@ use OAuth2\Token;
 class Session implements DataStore
 {
     public function __construct() {
-        session_start();
+        if(session_id() == '') {
+            session_start();
+        }
     }
 
     /**
